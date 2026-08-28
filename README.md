@@ -1,6 +1,6 @@
 # Tau Metalworks & Engineering Supplies — Network Design and Implementation
 
-CMPG 325 (Computer Networks) Individual Semester Project — North-West University, 2026.
+CMPG 325 (Computer Networks) Individual Semester Project - North-West University, 2026.
 
 This repository contains the design proposal, Packet Tracer implementation, and supporting evidence for the network designed for Tau Metalworks & Engineering Supplies, a manufacturing client based in Potchefstroom. The repository is structured to reflect the project's progression from requirements analysis through to final submission, with the commit history intended to demonstrate the iterative development of the design across the semester.
 
@@ -100,7 +100,3 @@ The completed network may be opened via [`packet-tracer/tau-metalworks-network.p
 | 28 August 2026 | Milestone 1 — Client Design Review |
 | 2 October 2026 | Milestone 2 — Client Implementation Review |
 | 16 October 2026 | Final Submission |
-
-## Author
-
-T. Magwatane — 42710677 — North-West University, CMPG 325
