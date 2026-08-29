@@ -14,10 +14,10 @@ This repository contains the design proposal, Packet Tracer implementation, and 
 | Assigned Organisation | Tau Metalworks & Engineering Supplies (Potchefstroom) |
 | Industry | Manufacturing |
 | Assigned Addressing Block | 172.30.16.0/23 |
-| Assigned Networking Challenge | HTTP/Web Server (internal web service hosting) — Intermediate |
+| Assigned Networking Challenge | HTTP/Web Server (internal web service hosting) - Intermediate |
 | Design Constraint | Critical services (file/print/application) must remain available during business hours |
-| Client Change Request | CR2 — the client has taken over an additional floor/area of the building |
-| Project Period | 14 August 2026 – 16 October 2026 |
+| Client Change Request | CR2 - the client has taken over an additional floor/area of the building |
+| Project Period | 14 August 2026 - 16 October 2026 |
 
 ## Repository Structure
 
@@ -56,7 +56,7 @@ A two-tier, extended-star topology was adopted for this network. A single Layer-
 
 The Ground Floor, the upper-floor departments (Engineering, Production, Warehouse), the server switch, and the new CR2 floor are each served by a dedicated access switch, trunked to the core over 802.1Q. The server switch (SW-SERVER) is connected to the core via a bundled LACP EtherChannel uplink rather than a single link, constituting the physical-layer component of the response to the availability constraint, whereby a single failed cable or port does not result in the loss of HTTP or DHCP services.
 
-**Logical Topology** — VLANs, subnet boundaries, and SVI gateways on the core switch:
+**Logical Topology** - VLANs, subnet boundaries, and SVI gateways on the core switch:
 
 ![Logical Topology](02-design/logical-topology.png)
 
@@ -77,7 +77,7 @@ Each VLAN is represented as a discrete subnet with its own SVI gateway on the co
 
 DHCP is centralised on the core switch, with pools configured for VLANs 10, 20, 30, 40, 50, and 70. The first ten addresses of each subnet are excluded from the DHCP pool and reserved for the gateway and any statically addressed devices. VLAN 99 is statically addressed only, in accordance with standard switch management practice. The complete addressing breakdown and subnetting justification are documented in [`03-ip-addressing/ip-addressing-plan.md`](03-ip-addressing/ip-addressing-plan.md).
 
-## Assigned Networking Challenge — HTTP/Web Server
+## Assigned Networking Challenge - HTTP/Web Server
 
 An internal HTTP server (172.30.17.66, VLAN 60) has been configured to host an intranet page for the client. The server is statically addressed and has been verified for reachability from at least two separate VLANs, confirming correct inter-VLAN routing. Configuration and verification evidence is documented in [`05-testing/testing-log.md`](05-testing/testing-log.md).
 
@@ -85,7 +85,7 @@ An internal HTTP server (172.30.17.66, VLAN 60) has been configured to host an i
 
 Two complementary measures address the requirement that critical services remain available during business hours, both of which are represented in the diagrams above. At the logical layer, VLAN 60 is isolated on its own subnet, such that broadcast traffic originating elsewhere on the network cannot affect it. At the physical layer, the server switch is connected to the core via a bundled LACP EtherChannel uplink, ensuring that a single link failure does not result in the interruption of the HTTP or DHCP services.
 
-## Change Request — CR2
+## Change Request - CR2
 
 The client's occupation of an additional floor was accommodated by the introduction of VLAN 70 on a dedicated access switch (SW-NEWFLOOR), connected to the core using the same 802.1Q trunking pattern applied to every other floor. This approach was adopted to ensure that the change request could be incorporated without requiring modification to the existing design. Further detail is provided in [`07-change-request-CR2/cr2-implementation.md`](07-change-request-CR2/cr2-implementation.md).
 
