@@ -47,39 +47,41 @@ The network architecture addresses key business requirements, including departme
 
 ### 1. Physical Topology
 
-The physical layout adopts a **two-tier extended-star architecture** centered on a central Layer 3 Multilayer Core Switch, connecting distribution access switches across floors and site areas via 802.1Q trunks and a redundant LACP EtherChannel link.
+The physical layout adopts an **Extended-Star / Hierarchical Network architecture** centered on a central 3560-24PS Layer-3 Multilayer Core Switch (`CORE-SWITCH`), connecting 2960-24TT access switches across departmental floors and site areas via 802.1Q trunks and a redundant LACP EtherChannel link[cite: 3].
 
 ![Physical Topology](02-design/physical-topology.png)
 
 #### Physical Architecture Highlights
-* **Core Distribution Layer:** A central Layer 3 Multilayer Switch (`CORE-SWITCH`) acts as the high-speed backbone and routing core.
-* **Access Layer Devices:** Dedicated Layer 2 switches serve each department/floor:
-  * Ground Floor: Admin & Sales access switch
-  * Upper Floors / Main Building: `SW-ENG`, `SW-PROD`, `SW-WARE`
-  * Server Segment: `SW-SERVER`
-  * Site Expansion (CR2): `SW-NEWFLOOR`
-* **LACP EtherChannel Redundant Uplink:** A dual-link LACP EtherChannel connects `CORE-SWITCH` to `SW-SERVER` to prevent link failure for core server resources.
-* **802.1Q Trunk Links:** Standardized 802.1Q trunking links all access switches to the core switch.
+* **Core Distribution Layer:** A central Layer-3 Multilayer Switch (`CORE-SWITCH`) acts as the high-speed backbone, inter-VLAN routing engine, and centralized DHCP server[cite: 3].
+* **Access Layer Devices (Cisco 2960-24TT):** Dedicated Layer-2 access switches serve each department and floor[cite: 3]:
+  * Ground Floor: `SW-GROUND` (VLAN 10 - Administration, VLAN 20 - Sales)[cite: 3]
+  * Engineering Department: `SW-ENG` (VLAN 30 - Engineering)[cite: 3]
+  * Production Department: `SW-PROD` (VLAN 40 - Production)[cite: 3]
+  * Warehouse Area: `SW-WAREHOUSE` (VLAN 50 - Warehouse)[cite: 3]
+  * Server Room: `SW-SERVERS` (VLAN 60 - Servers)[cite: 3]
+  * Site Expansion (CR2): `SW-NEWFLOOR` (VLAN 70 - New Floor)[cite: 3]
+* **LACP EtherChannel Redundant Uplink:** A dual-link LACP EtherChannel (Port-Channel 1) carries VLAN 60 and VLAN 99 between `CORE-SWITCH` and `SW-SERVERS` to ensure continuous service availability[cite: 3].
+* **802.1Q Trunk Links:** Standardized 802.1Q trunks link all access switches to `CORE-SWITCH`, passing relevant operational VLANs and VLAN 99 for management[cite: 3].
 
 ---
 
 ### 2. Logical Topology & SVI Routing Model
 
-Logical segmentation is enforced through IEEE 802.1Q VLANs. All inter-VLAN routing and dynamic addressing services are centralized on `CORE-SWITCH` using Switch Virtual Interfaces (SVIs).
+Logical segmentation is enforced through IEEE 802.1Q VLANs[cite: 1, 3]. All inter-VLAN routing and dynamic addressing services are centralized on `CORE-SWITCH` using Switch Virtual Interfaces (SVIs)[cite: 1, 3].
 
 ![Logical Topology](02-design/logical-topology.png)
 
 #### Core Switch Services & Controls
-* **Inter-VLAN Routing:** Performed in hardware on `CORE-SWITCH` via SVIs (`SVI 10`, `20`, `30`, `40`, `50`, `60`, `70`, `99`).
-* **Centralized DHCP Server:** Dynamic pools configured for VLANs 10, 20, 30, 40, 50, and 70 with static address exclusions (`.1` to `.10`) reserved per subnet.
-* **Management Subnet:** VLAN 99 gateway configured at `172.30.17.225/28` for administrative access.
-* **Availability Constraint Response:** Server traffic (VLAN 60) is isolated on a `/27` subnet to eliminate broadcast degradation from user subnets.
+* **Inter-VLAN Routing:** Performed in hardware on `CORE-SWITCH` via SVIs (`SVI 10`, `20`, `30`, `40`, `50`, `60`, `70`, `99`)[cite: 1].
+* **Centralized DHCP Server:** Dynamic pools configured for VLANs 10, 20, 30, 40, 50, and 70 with static address exclusions (`.1` to `.10`) reserved per subnet[cite: 1].
+* **Management Subnet:** VLAN 99 gateway configured at `172.30.17.225/28` for administrative switch access[cite: 1, 3].
+* **Availability Constraint Response:** Server traffic (VLAN 60) is isolated on a `/27` subnet to eliminate broadcast degradation from user subnets[cite: 1, 3].
 
 ---
 
 ## IP Addressing Plan (`172.30.16.0/23`)
 
-Variable Length Subnet Masking (VLSM) was applied to partition the assigned `/23` block (`172.30.16.0` – `172.30.17.255`) efficiently across all departmental segments.
+Variable Length Subnet Masking (VLSM) was applied to partition the assigned `/23` block (`172.30.16.0` – `172.30.17.255`) efficiently across all departmental segments[cite: 1].
 
 | VLAN | Department / Purpose | Subnet Address | Mask | Usable Range | Default Gateway | Allocation Type |
 |---|---|---|---|---|---|---|
@@ -92,23 +94,23 @@ Variable Length Subnet Masking (VLSM) was applied to partition the assigned `/23
 | **70** | Expansion Floor (CR2) | `172.30.17.96` | `/27` (`.224`) | `172.30.17.97` – `172.30.17.126` | `172.30.17.97` | Dynamic (DHCP) |
 | **99** | Switch Management | `172.30.17.224` | `/28` (`.240`) | `172.30.17.225` – `172.30.17.238` | `172.30.17.225` | Static |
 
-> **DHCP Exclusions:** Addresses `.1` through `.10` in each dynamic subnet are excluded on `CORE-SWITCH` for gateway SVIs, static devices, and expansion reserve.
+> **DHCP Exclusions:** Addresses `.1` through `.10` in each dynamic subnet are excluded on `CORE-SWITCH` for gateway SVIs, static devices, and expansion reserve[cite: 1].
 
 ---
 
 ## Technical Solutions & Constraint Implementation
 
-### 1. Assigned Challenge — Internal HTTP Web Hosting
-* **Server Details:** Static IP `172.30.17.66/27` on VLAN 60 with gateway `172.30.17.65`.
-* **Reachability:** Verified across all departmental VLANs via SVI inter-VLAN routing on `CORE-SWITCH`.
+### 1. Assigned Challenge - Internal HTTP Web Server
+* **Server Details:** Static IP `172.30.17.66/27` on VLAN 60 with gateway `172.30.17.65` (`SRV-HTTP`)[cite: 3].
+* **Reachability:** Verified across all departmental VLANs via SVI inter-VLAN routing on `CORE-SWITCH`[cite: 1, 3].
 
 ### 2. High Availability Response (Business Hours Availability)
-* **Physical Redundancy:** A bundled **LACP EtherChannel (Port-Channel 1)** connects `CORE-SWITCH` to `SW-SERVER`, safeguarding against single cable/port failure.
-* **Logical Isolation:** VLAN 60 is placed on a isolated `/27` subnet, preventing end-user broadcast traffic from impacting core services.
+* **Physical Redundancy:** A bundled **LACP EtherChannel (Po1)** carrying VLANs 60 and 99 connects `CORE-SWITCH` to `SW-SERVERS`, safeguarding against single cable or port failures[cite: 3].
+* **Logical Isolation:** VLAN 60 is placed on an isolated `/27` subnet, preventing end-user broadcast traffic from impacting core services[cite: 1, 3].
 
 ### 3. Change Request Integration (CR2)
-* **Scope:** Incorporation of a new building floor (`SW-NEWFLOOR`).
-* **Implementation:** Integrated via **VLAN 70 (`172.30.17.96/27`)** over a standard 802.1Q trunk without requiring IP re-addressing on existing subnets.
+* **Scope:** Incorporation of a new building floor (`SW-NEWFLOOR`)[cite: 3].
+* **Implementation:** Integrated via **VLAN 70 (`172.30.17.96/27`)** over an 802.1Q trunk carrying VLANs 70 and 99 without requiring IP re-addressing on existing subnets[cite: 3].
 
 ---
 
