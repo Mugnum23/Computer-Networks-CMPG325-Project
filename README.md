@@ -1,4 +1,4 @@
-# Tau Metalworks & Engineering Supplies — Enterprise Network Design & Implementation
+# Tau Metalworks & Engineering Supplies - Enterprise Network Design & Implementation
 **Module:** CMPG 325 (Computer Networks) Individual Semester Project  
 **Institution:** North-West University  
 **Academic Year:** 2026  
@@ -18,16 +18,16 @@ The network architecture addresses key business requirements, including departme
 | Specification Field | Project Detail |
 |---|---|
 | **Student Name & ID** | T. Magwatane (42710677) |
-| **Module Code** | CMPG 325 — Computer Networks |
+| **Module Code** | CMPG 325 - Computer Networks |
 | **Project Identifier** | CMPG325-2026-034 |
 | **Client ID** | CLI-034 |
 | **Assigned Organisation** | Tau Metalworks & Engineering Supplies |
 | **Location** | Potchefstroom, South Africa |
 | **Industry Sector** | Manufacturing |
 | **Assigned IP Block** | `172.30.16.0/23` (`172.30.16.0` – `172.30.17.255`) |
-| **Networking Challenge** | HTTP/Web Server — Internal Web Service Hosting |
+| **Networking Challenge** | HTTP/Web Server - Internal Web Service Hosting |
 | **Business Constraint** | High Availability: Critical services must remain accessible during business hours |
-| **Change Request** | CR2 — Integration of an additional floor/building expansion |
+| **Change Request** | CR2 - Integration of an additional floor/building expansion |
 | **Simulation Platform** | Cisco Packet Tracer (v8.0+) |
 | **Project Timeline** | 14 August 2026 – 16 October 2026 |
 
@@ -153,4 +153,3 @@ tau-metalworks-network-cmpg325-2026034/
     ├── Report/
     ├── Documentation/
     ├── Evidence/
-    └── Diagrams/
