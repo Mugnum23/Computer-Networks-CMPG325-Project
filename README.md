@@ -47,21 +47,21 @@ The network architecture addresses key business requirements, including departme
 
 ### 1. Physical Topology
 
-The physical layout adopts an **Extended-Star / Hierarchical Network architecture** centered on a central 3560-24PS Layer-3 Multilayer Core Switch (`CORE-SWITCH`), connecting 2960-24TT access switches across departmental floors and site areas via 802.1Q trunks and a redundant LACP EtherChannel link[cite: 3].
+The physical layout follows an **Extended-Star / Hierarchical Network architecture** modeled in Cisco Packet Tracer, centered on a 3560-24PS Layer-3 Multilayer Switch (`CORE-SWITCH`) interconnected to 2960-24TT access layer switches via 802.1Q trunk lines and an LACP EtherChannel bundle[cite: 3].
 
 ![Physical Topology](02-design/physical-topology.png)
 
-#### Physical Architecture Highlights
-* **Core Distribution Layer:** A central Layer-3 Multilayer Switch (`CORE-SWITCH`) acts as the high-speed backbone, inter-VLAN routing engine, and centralized DHCP server[cite: 3].
-* **Access Layer Devices (Cisco 2960-24TT):** Dedicated Layer-2 access switches serve each department and floor[cite: 3]:
-  * Ground Floor: `SW-GROUND` (VLAN 10 - Administration, VLAN 20 - Sales)[cite: 3]
-  * Engineering Department: `SW-ENG` (VLAN 30 - Engineering)[cite: 3]
-  * Production Department: `SW-PROD` (VLAN 40 - Production)[cite: 3]
-  * Warehouse Area: `SW-WAREHOUSE` (VLAN 50 - Warehouse)[cite: 3]
-  * Server Room: `SW-SERVERS` (VLAN 60 - Servers)[cite: 3]
-  * Site Expansion (CR2): `SW-NEWFLOOR` (VLAN 70 - New Floor)[cite: 3]
-* **LACP EtherChannel Redundant Uplink:** A dual-link LACP EtherChannel (Port-Channel 1) carries VLAN 60 and VLAN 99 between `CORE-SWITCH` and `SW-SERVERS` to ensure continuous service availability[cite: 3].
-* **802.1Q Trunk Links:** Standardized 802.1Q trunks link all access switches to `CORE-SWITCH`, passing relevant operational VLANs and VLAN 99 for management[cite: 3].
+#### Physical Architecture & Device Mapping
+* **Core Distribution Layer:**
+  * **`CORE-SWITCH` (Cisco 3560-24PS):** Functions as the central Layer-3 routing engine, default gateway for all SVIs, dynamic DHCP server, and network backbone[cite: 3].
+* **Access Layer Switches (Cisco 2960-24TT):**
+  * **`SW-GROUND` (Ground Floor):** Connects `PC-ADMIN` (VLAN 10 - Administration) and `PC-SALES` (VLAN 20 - Sales)[cite: 3]. Trunked via 802.1Q passing VLANs 10, 20, 99[cite: 3].
+  * **`SW-ENG` (Engineering Floor):** Connects `PC-ENGINEERING` (VLAN 30 - Engineering)[cite: 3]. Trunked via 802.1Q passing VLANs 30, 99[cite: 3].
+  * **`SW-PROD` (Production Floor):** Connects `PC-PRODUCTION` (VLAN 40 - Production)[cite: 3]. Trunked via 802.1Q passing VLANs 40, 99[cite: 3].
+  * **`SW-WAREHOUSE` (Warehouse Area):** Connects `PC-WAREHOUSE` (VLAN 50 - Warehouse)[cite: 3]. Trunked via 802.1Q passing VLANs 50, 99[cite: 3].
+  * **`SW-SERVERS` (Server Room - VLAN 60):** Houses the internal HTTP Web Server (`SRV-HTTP` / `172.30.17.66`)[cite: 3]. Connected to `CORE-SWITCH` via a redundant **LACP EtherChannel (Po1)** carrying VLANs 60, 99[cite: 3].
+  * **`SW-NEWFLOOR` (New Floor - CR2):** Accommodates expansion workstation `PC-CR2` (VLAN 70 - Dynamic DHCP)[cite: 3]. Trunked via 802.1Q passing VLANs 70, 99[cite: 3].
+* **Management & Control:** VLAN 99 (`172.30.17.224/28`) is configured across all switch trunks for centralized in-band administrative access[cite: 3].
 
 ---
 
