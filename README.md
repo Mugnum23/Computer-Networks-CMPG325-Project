@@ -1,4 +1,4 @@
-# Tau Metalworks & Engineering Supplies — Network Design and Implementation
+# Tau Metalworks & Engineering Supplies - Network Design and Implementation
 
 CMPG 325 (Computer Networks) Individual Semester Project - North-West University, 2026.
 
